@@ -40,32 +40,6 @@ public class CompaniesPage {
     public void clearSearchInput() throws InterruptedException {
         searchPageInput.clear();
     }
-//    public boolean verifySearchResultsContain(String keyword) {
-//        List<WebElement> results = driver.findElements(resultsList);
-//        for (WebElement result : results) {
-//            String companyName = result.findElement(resultsCompanyName).getText().toLowerCase();
-//            if (!companyName.contains(keyword.toLowerCase())) {
-//                return false;
-//            }
-//        }
-//        return true;
-//    }
-//
-//    public void selectFirstCompany() {
-//        List<WebElement> results = driver.findElements(resultsList);
-//        if (!results.isEmpty()) {
-//            actions.moveToElement(results.get(0)).perform();
-//            results.get(0).click();
-//        }
-//    }
-//
-//    public boolean verifyCompanyDetailsMatch() {
-//        WebElement companyName = driver.findElement(resultsCompanyName);
-//        By selectedCompanyName = By.xpath("//h1[@role='heading']");
-//        String expectedName = companyName.getText();
-//        String actualName = driver.findElement(selectedCompanyName).getText();
-//        return expectedName.equals(actualName);
-//    }
 }
 
 
