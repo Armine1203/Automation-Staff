@@ -28,7 +28,7 @@ public class Tests {
     @AfterEach
     public void quitDriver() {
         System.out.println("PostTest");
-//        driver.quit();
+        driver.quit();
         }
 
     @Test
@@ -44,7 +44,7 @@ public class Tests {
         resultPage.checkResultListItemsContainText("ser");
 //        resultPage.checkResultListItemsContainText("ser++"); //Work correct
         resultPage.chooseRandomItem();
-
+        resultPage.checkTwoCompanyElementsData();
     }
 }
 

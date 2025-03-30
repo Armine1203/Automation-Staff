@@ -3,13 +3,13 @@ package pages;
 import org.openqa.selenium.WebElement;
 
 public class Company {
-    private WebElement name;
-    private WebElement pageViews;
-    private WebElement pageFollowers;
-    private WebElement activeJobsCount;
-    private WebElement historyJobsCount;
+    private String name;
+    private Integer pageViews;
+    private Integer pageFollowers;
+    private Integer activeJobsCount;
+    private Integer historyJobsCount;
 
-    public Company(WebElement name, WebElement pageViews, WebElement pageFollowers, WebElement activeJobsCount, WebElement historyJobsCount) {
+    public Company(String name, Integer pageViews, Integer pageFollowers, Integer activeJobsCount, Integer historyJobsCount) {
         this.name = name;
         this.pageViews = pageViews;
         this.pageFollowers = pageFollowers;
@@ -17,43 +17,35 @@ public class Company {
         this.historyJobsCount = historyJobsCount;
     }
 
-    public WebElement getName() {
+    public String getName() {
         return name;
     }
 
-    public void setName(WebElement name) {
-        this.name = name;
-    }
-
-    public WebElement getPageViews() {
+    public Integer getPageViews() {
         return pageViews;
     }
 
-    public void setPageViews(WebElement pageViews) {
-        this.pageViews = pageViews;
-    }
-
-    public WebElement getPageFollowers() {
+    public Integer getPageFollowers() {
         return pageFollowers;
     }
 
-    public void setPageFollowers(WebElement pageFollowers) {
-        this.pageFollowers = pageFollowers;
-    }
-
-    public WebElement getActiveJobsCount() {
+    public Integer getActiveJobsCount() {
         return activeJobsCount;
     }
 
-    public void setActiveJobsCount(WebElement activeJobsCount) {
-        this.activeJobsCount = activeJobsCount;
-    }
-
-    public WebElement getHistoryJobsCount() {
+    public Integer getHistoryJobsCount() {
         return historyJobsCount;
     }
 
-    public void setHistoryJobsCount(WebElement historyJobsCount) {
-        this.historyJobsCount = historyJobsCount;
+    @Override
+    public String toString() {
+        return "Company{" +
+                "name='" + name + '\'' +
+                ", pageViews=" + pageViews +
+                ", pageFollowers=" + pageFollowers +
+                ", activeJobsCount=" + activeJobsCount +
+                ", historyJobsCount=" + historyJobsCount +
+                '}';
     }
 }
+
