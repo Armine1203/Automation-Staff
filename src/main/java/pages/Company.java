@@ -1,7 +1,5 @@
 package pages;
 
-import org.openqa.selenium.WebElement;
-
 public class Company {
     private String name;
     private Integer pageViews;
@@ -39,7 +37,7 @@ public class Company {
 
     @Override
     public String toString() {
-        return "Company{" +
+        return "pages.Company{" +
                 "name='" + name + '\'' +
                 ", pageViews=" + pageViews +
                 ", pageFollowers=" + pageFollowers +

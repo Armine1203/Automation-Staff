@@ -5,8 +5,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-public class CompaniesPage {
-    WebDriver driver;
+public class CompaniesPage extends BasePage {
 
     private final By selectorSearchPageInput = By.xpath("//input[@placeholder='Enter keywords...']");
     private final By selectorSearchButton = By.xpath("//div[text()='Search']");
@@ -14,10 +13,6 @@ public class CompaniesPage {
     private WebElement searchPageInput;
     private WebElement searchButton;
 
-
-    public CompaniesPage(WebDriver driver) {
-        this.driver = driver;
-    }
 
     public void searchRandomString(String text) throws InterruptedException {
         searchPageInput = driver.findElement(selectorSearchPageInput);
@@ -29,7 +24,7 @@ public class CompaniesPage {
         Thread.sleep(3000);
     }
 
-    public void checkResultCountIsZero(){
+    public void checkResultCountIsZero() {
         String searchResultCount = driver.findElement(selectorSearchResultCount).getText();
         System.out.println(searchResultCount);
         Integer resultCount = Integer.parseInt(searchResultCount);
@@ -39,6 +34,25 @@ public class CompaniesPage {
 
     public void clearSearchInput() throws InterruptedException {
         searchPageInput.clear();
+    }
+
+
+    //2
+
+    public CompaniesPage clickToViewMoreButton() throws InterruptedException {
+        Thread.sleep(3000);
+        WebElement viewMore = driver.findElement(By.xpath("//div[text()='Filter By Industry']/following-sibling::div//div[text()='View more']/parent::div"));
+        viewMore.click();
+        return new CompaniesPage();
+    }
+
+    public ResultPage filterCompaniesByIndustry(String industryName) throws InterruptedException {
+
+        WebElement element = driver.findElement(By.xpath(String.format("//div[text() = 'Filter By Industry']/parent::div//div/span[text()=\"%s\"]", StringHelper.capitalizeFirstLetters(industryName))));
+        action.moveToElement(element).perform();
+        element.click();
+        return new ResultPage();
+
     }
 }
 
