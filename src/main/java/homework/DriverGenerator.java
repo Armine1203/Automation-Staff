@@ -1,7 +1,9 @@
-package pages;
+package homework;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+
+import java.time.Duration;
 
 public class DriverGenerator {
     public static WebDriver driver;
@@ -11,13 +13,16 @@ public class DriverGenerator {
             driver = new ChromeDriver();
             driver.get("https://staff.am/");
             driver.manage().window().maximize();
+            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+
         }
         return driver;
     }
-    public static void quitDriver() throws InterruptedException {
+
+    public static void quitDriver() {
         if (driver != null) {
-            Thread.sleep(5000);
             driver.quit();
+            driver = null;
         }
     }
 

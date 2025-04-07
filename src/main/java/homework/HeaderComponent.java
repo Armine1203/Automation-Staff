@@ -1,4 +1,4 @@
-package pages;
+package homework;
 
 import org.openqa.selenium.By;
 

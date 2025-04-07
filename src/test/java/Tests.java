@@ -1,11 +1,6 @@
-import org.apache.commons.text.WordUtils;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import pages.*;
+import homework.*;
 
 import java.util.List;
 
@@ -18,8 +13,6 @@ public class Tests extends TestClass {
     public void testCompanySearch() throws InterruptedException {
         System.out.println("Test1");
         companiesPage = mainPage.clickCompaniesTab().searchIndustry();
-
-        Thread.sleep(5000);
         companiesPage.searchRandomString(StringHelper.generateRandomString(8));
         companiesPage.checkResultCountIsZero();
         companiesPage.clearSearchInput();
@@ -40,31 +33,29 @@ public class Tests extends TestClass {
                 .clickOnCompaniesTab()
                 .clickToViewMoreButton()
                 .filterCompaniesByIndustry("sport");
-        Thread.sleep(3000);
 
+        Thread.sleep(5000);// new sport companies doesn't load without this row
         System.out.println("All companies");
         List<Company> allCompanyList = resultPage.addCompaniesDataToList();
         resultPage.clickHiringTab();
 
-        Thread.sleep(3000);
         System.out.println("Hiring");
         List<Company> hiringCompanyList = resultPage.addCompaniesDataToList();
-        Thread.sleep(3000);
+
 
         //--------------------------------
 
         footer.clickCompaniesViewAllCompaniesTab();
-        Thread.sleep(3000);
+
         //repeat steps from 2 to 4
         companiesPage.filterCompaniesByIndustry("sport");
-        Thread.sleep(3000);
+
+        System.out.println("All companies2");
         List<Company> allCompanyList2 = resultPage.addCompaniesDataToList();
         resultPage.clickHiringTab();
 
-        Thread.sleep(3000);
-        System.out.println("Hiring");
+        System.out.println("Hiring2");
         List<Company> hiringCompanyList2 = resultPage.addCompaniesDataToList();
-        Thread.sleep(3000);
 
         Assertions.assertEquals(allCompanyList,allCompanyList2,"All companies data doesn't equal");
         Assertions.assertEquals(hiringCompanyList,hiringCompanyList2,"Hiring companies data doesn't equal");

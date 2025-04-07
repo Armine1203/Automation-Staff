@@ -1,9 +1,9 @@
-package pages;
+package homework;
 
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ public class ResultPage extends BasePage {
     Random random = new Random();
     List<WebElement> listOfResults;
     static int randomNumber;
-    List<pages.Company> companyList = new ArrayList<>();
+    List<Company> companyList = new ArrayList<>();
 
     By selectorListResult = By.xpath("//div/a[@role='link']");
     By resultsCompanyName = By.xpath(".//img[@alt='company-logo']/following-sibling::div/div[1]");
@@ -28,7 +28,7 @@ public class ResultPage extends BasePage {
 
     public void checkResultListItemsContainText(String text){
         System.out.println("Companies");
-        listOfResults = driver.findElements(selectorListResult);
+        listOfResults = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(selectorListResult));
         for (WebElement element : listOfResults) {
             String companyName = element.findElement(resultsCompanyName).getText().toLowerCase();
             System.out.print(companyName + ", ");
@@ -40,7 +40,8 @@ public class ResultPage extends BasePage {
     }
 
     public List<Company> addCompaniesDataToList(){
-        listOfResults = driver.findElements(selectorListResult);
+        listOfResults = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(selectorListResult));
+
         for (WebElement element: listOfResults){
             int count = 0;
             String companyName = element.findElement(By.xpath(String.format("(.//img[@alt='company-logo']/following-sibling::div/div[1])[\"%s\"]",count))).getText().toLowerCase();
@@ -56,7 +57,7 @@ public class ResultPage extends BasePage {
             Integer pageActiveJobsCount = Integer.parseInt(activeJobsCount);
             Integer pageHistoryJobsCount = Integer.parseInt(historyJobsCount);
             count++;
-            companyList.add(new pages.Company(companyName,pageViewsCount,pageFollowersCount,pageActiveJobsCount,pageHistoryJobsCount));
+            companyList.add(new homework.Company(companyName,pageViewsCount,pageFollowersCount,pageActiveJobsCount,pageHistoryJobsCount));
         }
         return companyList;
 
@@ -94,7 +95,9 @@ public class ResultPage extends BasePage {
     }
 
     public void clickHiringTab(){
-        driver.findElement(selector_hiringTab).click();
+        WebElement hiringTab = wait.until(ExpectedConditions.elementToBeClickable(selector_hiringTab));
+        hiringTab.click();
+//        driver.findElement(selector_hiringTab).click();
     }
 
 }

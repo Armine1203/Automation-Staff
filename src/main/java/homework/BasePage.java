@@ -1,12 +1,13 @@
-package pages;
+package homework;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.How;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
-import javax.swing.*;
+import java.time.Duration;
 
 public class BasePage {
     protected WebDriver driver = DriverGenerator.getDriver();
     protected Actions action = new Actions(driver);
+    protected WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 }

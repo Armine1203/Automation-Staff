@@ -1,9 +1,9 @@
-package pages;
+package homework;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 public class MainPage extends BasePage {
     private final By selectorCompanies = By.xpath("(//div[text()='Companies'])[2]");
@@ -13,20 +13,20 @@ public class MainPage extends BasePage {
 
 
     public MainPage clickCompaniesTab() {
-        driver.findElement(selectorCompanies).click();
+        wait.until(ExpectedConditions.elementToBeClickable(selectorCompanies)).click();
         return this;
     }
 
-    public CompaniesPage searchIndustry() throws InterruptedException {
-        WebElement allIndustriesSearchField = driver.findElement(selectorSearchInput);
+    public CompaniesPage searchIndustry() {
+        WebElement allIndustriesSearchField = wait.until(ExpectedConditions.elementToBeClickable(selectorSearchInput));
         allIndustriesSearchField.click();
-        Thread.sleep(5000);
+
+        wait.until(ExpectedConditions.visibilityOf(allIndustriesSearchField));
 
         allIndustriesSearchField.sendKeys("Information technologies");
         allIndustriesSearchField.sendKeys(Keys.ENTER);
 
-        WebElement searchIcon = driver.findElement(selectorSearchIcon);
-        Thread.sleep(3000);
+        WebElement searchIcon = wait.until(ExpectedConditions.elementToBeClickable(selectorSearchIcon));
         searchIcon.click();
         return new CompaniesPage();
     }

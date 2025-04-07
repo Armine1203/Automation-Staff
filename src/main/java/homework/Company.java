@@ -1,4 +1,4 @@
-package pages;
+package homework;
 
 public class Company {
     private String name;
