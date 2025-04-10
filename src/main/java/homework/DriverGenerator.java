@@ -11,9 +11,7 @@ public class DriverGenerator {
     public static WebDriver getDriver() {
         if (driver == null) {
             driver = new ChromeDriver();
-            driver.get("https://staff.am/");
             driver.manage().window().maximize();
-            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
 
         }
         return driver;

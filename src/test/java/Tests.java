@@ -39,12 +39,13 @@ public class Tests extends TestClass {
         List<Company> allCompanyList = resultPage.addCompaniesDataToList();
         resultPage.clickHiringTab();
 
+        Thread.sleep(5000);
         System.out.println("Hiring");
         List<Company> hiringCompanyList = resultPage.addCompaniesDataToList();
 
 
         //--------------------------------
-
+        Thread.sleep(5000);
         footer.clickCompaniesViewAllCompaniesTab();
 
         //repeat steps from 2 to 4

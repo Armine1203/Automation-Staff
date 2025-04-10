@@ -8,7 +8,8 @@ public class TestClass {
 
     @BeforeEach
     public void setUp(){
-        DriverGenerator.getDriver();
+        DriverGenerator.getDriver().get("https://staff.am/");
+
     }
 
     @AfterEach

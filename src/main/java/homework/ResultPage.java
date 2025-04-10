@@ -26,30 +26,31 @@ public class ResultPage extends BasePage {
 
     By selector_hiringTab = By.xpath("//div[text()='Hiring']");
 
-    public void checkResultListItemsContainText(String text){
+    public void checkResultListItemsContainText(String text) {
         System.out.println("Companies");
         listOfResults = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(selectorListResult));
         for (WebElement element : listOfResults) {
             String companyName = element.findElement(resultsCompanyName).getText().toLowerCase();
             System.out.print(companyName + ", ");
-            Assertions.assertTrue(companyName.contains(text), "The name '" + companyName + "' does not contain "+text);
+            Assertions.assertTrue(companyName.contains(text), "The name '" + companyName + "' does not contain " + text);
         }
         System.out.println(" ");
-        System.out.println("All names contain "+text);
+        System.out.println("All names contain " + text);
 
     }
 
-    public List<Company> addCompaniesDataToList(){
+    public List<Company> addCompaniesDataToList() {
+        companyList.clear();
         listOfResults = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(selectorListResult));
 
-        for (WebElement element: listOfResults){
+        for (WebElement element : listOfResults) {
             int count = 0;
-            String companyName = element.findElement(By.xpath(String.format("(.//img[@alt='company-logo']/following-sibling::div/div[1])[\"%s\"]",count))).getText().toLowerCase();
-            String pageViews = element.findElement(By.xpath(String.format("(.//img[@alt='eye-icon']//following-sibling::div[1])[\"%s\"]",count))).getText().replaceAll("[^0-9]", "");
-            String pageFollowers = element.findElement(By.xpath(String.format("(.//img[@alt='people-icon']//following-sibling::div)[\"%s\"]",count))).getText().replaceAll("[^0-9]", "");
-            String activeJobsCount = element.findElement(By.xpath(String.format("(.//div[contains(text(), 'Active job')])[\"%s\"]",count))).getText().replaceAll("[^0-9]", "");
-            String historyJobsCount = element.findElement(By.xpath(String.format("(.//div[contains(text(), 'Job history')])[\"s\"]",count))).getText().replaceAll("[^0-9]", "");
-            System.out.print(companyName + ", "+pageViews + ", " +pageFollowers + ", "+activeJobsCount+", "+historyJobsCount  );
+            String companyName = element.findElement(By.xpath(String.format("(.//img[@alt='company-logo']/following-sibling::div/div[1])[\"%s\"]", count))).getText().toLowerCase();
+            String pageViews = element.findElement(By.xpath(String.format("(.//img[@alt='eye-icon']//following-sibling::div[1])[\"%s\"]", count))).getText().replaceAll("[^0-9]", "");
+            String pageFollowers = element.findElement(By.xpath(String.format("(.//img[@alt='people-icon']//following-sibling::div)[\"%s\"]", count))).getText().replaceAll("[^0-9]", "");
+            String activeJobsCount = element.findElement(By.xpath(String.format("(.//div[contains(text(), 'Active job')])[\"%s\"]", count))).getText().replaceAll("[^0-9]", "");
+            String historyJobsCount = element.findElement(By.xpath(String.format("(.//div[contains(text(), 'Job history')])[\"s\"]", count))).getText().replaceAll("[^0-9]", "");
+            System.out.print(companyName + ", " + pageViews + ", " + pageFollowers + ", " + activeJobsCount + ", " + historyJobsCount);
             System.out.println();
 
             Integer pageViewsCount = Integer.parseInt(pageViews);
@@ -57,24 +58,24 @@ public class ResultPage extends BasePage {
             Integer pageActiveJobsCount = Integer.parseInt(activeJobsCount);
             Integer pageHistoryJobsCount = Integer.parseInt(historyJobsCount);
             count++;
-            companyList.add(new homework.Company(companyName,pageViewsCount,pageFollowersCount,pageActiveJobsCount,pageHistoryJobsCount));
+            companyList.add(new homework.Company(companyName, pageViewsCount, pageFollowersCount, pageActiveJobsCount, pageHistoryJobsCount));
         }
         return companyList;
 
     }
 
-    public void chooseRandomItem(){
-        randomNumber= random.nextInt(listOfResults.size());
+    public void chooseRandomItem() {
+        randomNumber = random.nextInt(listOfResults.size());
         addCompaniesDataToList();
         listOfResults = driver.findElements(selectorListResult);
-        action.moveToElement(listOfResults.get(randomNumber)).perform();//scroll-ի ալտերնատիվ տարբերակ եմ օգտոգործել որպես
+        javascriptExecutor.executeScript("arguments[0].scrollIntoView({behavior: 'instant', block: 'center'});", listOfResults.get(randomNumber));
         listOfResults.get(randomNumber).click();
     }
 
     public void checkTwoCompanyElementsData() {
         String selectedCompanyName = driver.findElement(selector_selectedPageResultsCompanyName).getText().toLowerCase();
         String selectedPageViews = driver.findElement(selector_selectedNewPageResultCompanyPageViews).getText().replaceAll("[^0-9]", "");
-        String selectedPageFollowers =driver.findElement(selector_selectedNewPageResultCompanyPageFollowers).getText().replaceAll("[^0-9]", "");
+        String selectedPageFollowers = driver.findElement(selector_selectedNewPageResultCompanyPageFollowers).getText().replaceAll("[^0-9]", "");
         String selectedActiveJobsCount = driver.findElement(selector_selectedNewPageResultCompanyActiveJobsCount).getText().replaceAll("[^0-9]", "");
         String selectedHistoryJobsCount = driver.findElement(selector_selectedNewPageResultCompanyHistoryJobsCount).getText().replaceAll("[^0-9]", "");
 
@@ -90,14 +91,13 @@ public class ResultPage extends BasePage {
         Assertions.assertEquals(companyList.get(randomNumber).getActiveJobsCount(), selectedPageActiveJobsCount, "pages.Company page active jobs count doesn't equal");
         Assertions.assertEquals(companyList.get(randomNumber).getHistoryJobsCount(), selectedPageHistoryJobsCount, "pages.Company page history jobs count doesn't equal");
 
-        System.out.println("There equal !!!!!");
+        System.out.println("equal !!!!!");
 
     }
 
-    public void clickHiringTab(){
+    public void clickHiringTab() {
         WebElement hiringTab = wait.until(ExpectedConditions.elementToBeClickable(selector_hiringTab));
         hiringTab.click();
-//        driver.findElement(selector_hiringTab).click();
     }
 
 }
