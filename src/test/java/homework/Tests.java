@@ -63,22 +63,40 @@ public class Tests extends TestClass {
         System.out.println("Hiring2");
         List<Company> hiringCompanyList2 = resultPage.addCompaniesDataToList();
 
-        Assertions.assertEquals(allCompanyList,allCompanyList2,"All companies data doesn't equal");
-        Assertions.assertEquals(hiringCompanyList,hiringCompanyList2,"Hiring companies data doesn't equal");
+        Assertions.assertEquals(allCompanyList, allCompanyList2, "All companies data doesn't equal");
+        Assertions.assertEquals(hiringCompanyList, hiringCompanyList2, "Hiring companies data doesn't equal");
     }
 
     @ParameterizedTest
     @ValueSource(strings = {
             "Job category",
-            "Job special tag","Specialist level","Job salary",
-                            "Job types","Job terms",
+            "Job special tag",
+            "Specialist level",
+            "Job salary",
+            "Job types",
+            "Job terms",
             "By cities"
     })
-    public void test3(String filterGroupNames) throws InterruptedException {
+    public void test3(String filterGroupName) throws InterruptedException {
         System.out.println("Test3");
-         jobPage.clickToViewMoreButton(filterGroupNames)
-                 .getCheckboxes(filterGroupNames)
-                 .filterSectionViaRandomFilter();
+        jobPage.clickToViewMoreButton(filterGroupName)
+                .getCheckboxes(filterGroupName)
+                .filterSectionViaRandomFilter();
+        jobPage.clearAllFilters();
     }
-}
 
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "Job category",
+            "Job special tag",
+            "Specialist level",
+            "Job salary",
+            "Job types",
+            "Job terms",
+            "By cities"
+    })
+    public void testCombinedFiltersValidation(String filterGroupName) throws InterruptedException {
+        jobPage.checkFirstAndSecondFiltersSumCountAndResultCount(filterGroupName);
+    }
+
+}

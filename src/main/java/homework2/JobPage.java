@@ -1,7 +1,6 @@
 package homework2;
 
 import homework.BasePage;
-import homework.Company;
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -18,20 +17,22 @@ public class JobPage extends BasePage {
         PageFactory.initElements(driver, this);
     }
 
-    Random random = new Random();
-    By selectorCheckbox = By.xpath("//div[text() = 'Job category']/parent::div//div/span");
-    List<WebElement> listOfSectionsCheckboxes = new ArrayList<>();
+    private final Random random = new Random();
+    private List<WebElement> listOfSectionsCheckboxes = new ArrayList<>();
+    private final By clearAllFiltersButton = By.xpath("//div[contains(text(), 'Clear filters')]");
+    private final String formattedCheckboxesXpath = "//div[text() =\"%s\"]/parent::div//div/span";
+    private final By selectorPaginationMaxValue = By.xpath("//li[@class='next']//preceding-sibling::li[1]/a");
+    private final By selectorFilteredItems = By.xpath("//h1[text()='Current Job Openings']/parent::div/following-sibling::div//a[@role ='link']");
+    private final String formattedViewMoreButtonXpath = "//div[text()=\"%s\"]/following-sibling::div//div[text()='View more']/parent::div";
+    private WebElement paginationMaxValueElement ;
 
-
-
-    private final String formatedViewMoreButtonXpath = "//div[text()=\"%s\"]/following-sibling::div//div[text()='View more']/parent::div";
 
     public JobPage clickToViewMoreButton(String sectionName) {
         try {
-            String xpathViewMore = String.format(formatedViewMoreButtonXpath, sectionName);
+            String xpathViewMore = String.format(formattedViewMoreButtonXpath, sectionName);
             WebElement viewMore = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(xpathViewMore)));
             if (viewMore.isDisplayed() && viewMore.isEnabled()) {
-                javascriptExecutor.executeScript("arguments[0].scrollIntoView({behavior: 'instant', block: 'center'});", viewMore);
+                scrollIntoView(viewMore);
                 viewMore.click();
             }
         } catch (Exception e) {
@@ -40,27 +41,17 @@ public class JobPage extends BasePage {
         return this;
     }
 
-    private final String formatedCheckboxesXpath = "//div[text() =\"%s\"]/parent::div//div/span";
-
-
     public JobPage getCheckboxes(String sectionName) {
-
         listOfSectionsCheckboxes.clear();
-        String xpathCheckbox = String.format(formatedCheckboxesXpath, sectionName);
-
+        String xpathCheckbox = String.format(formattedCheckboxesXpath, sectionName);
         wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(xpathCheckbox)));
-
-        List<WebElement> checkboxes = driver.findElements(By.xpath(xpathCheckbox));
+        listOfSectionsCheckboxes.addAll(driver.findElements(By.xpath(xpathCheckbox)));
 
         System.out.println("Checkboxes found for section: " + sectionName);
-        for (WebElement checkbox : checkboxes) {
-            System.out.println(" - " + checkbox.getText());
-            listOfSectionsCheckboxes.add(checkbox);
-        }
+        listOfSectionsCheckboxes.forEach(checkbox -> System.out.println(" - " + checkbox.getText()));
 
         return this;
     }
-
     public JobPage filterSectionViaRandomFilter() throws InterruptedException {
         int randomNumber = random.nextInt(listOfSectionsCheckboxes.size());
         System.out.println("randomNumber "+randomNumber);
@@ -70,11 +61,6 @@ public class JobPage extends BasePage {
         validateFilterCountAndResultsAreEquals(listOfSectionsCheckboxes.get(randomNumber));
         return this;
     }
-
-    By selectorPaginationMaxValue = By.xpath("//li[@class='next']//preceding-sibling::li[1]/a");
-    WebElement paginationMaxValueElement ;
-    By selectorFilteredItems = By.xpath("//h1[text()='Current Job Openings']/parent::div/following-sibling::div//a[@role ='link']");
-
     public JobPage validateFilterCountAndResultsAreEquals(WebElement element) throws InterruptedException {
         Integer filterCount = Integer.valueOf(element.getText().replaceAll("[^0-9]", ""));
         System.out.println("filterCount is " + filterCount);
@@ -109,8 +95,50 @@ public class JobPage extends BasePage {
         }
         return this;
     }
-}
 
-//121=2*50+21
-//filtercount = paginitionMaxValue-1*50+filteredElements.size()
-//
+    public void checkFirstAndSecondFiltersSumCountAndResultCount(String filterGroupName) throws InterruptedException {
+        clickToViewMoreButton(filterGroupName)
+                .getCheckboxes(filterGroupName);
+        //1-in filter
+        int firstRandomIndex = random.nextInt(listOfSectionsCheckboxes.size());
+        WebElement firstFilter = listOfSectionsCheckboxes.get(firstRandomIndex);
+        int firstFilterCount = Helper.extractNumberFromElement(firstFilter);
+        scrollIntoView(firstFilter);
+        firstFilter.click();
+
+        //2-rd filter
+        getCheckboxes(filterGroupName);
+        int secondRandomIndex = random.nextInt(listOfSectionsCheckboxes.size());
+        while (secondRandomIndex == firstRandomIndex && listOfSectionsCheckboxes.size() > 1) {
+            secondRandomIndex = random.nextInt(listOfSectionsCheckboxes.size());
+        }
+        WebElement secondFilter = listOfSectionsCheckboxes.get(secondRandomIndex);
+        int secondFilterCount = Helper.extractNumberFromElement(secondFilter);
+        scrollIntoView(secondFilter);
+        secondFilter.click();
+
+        List<WebElement> mixedResults = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(selectorFilteredItems));;
+        int totalResults = mixedResults.size();
+
+        System.out.println("First filter count:"+firstFilterCount+"Second filter count: "+secondFilterCount+"Total result: "+totalResults);
+        Assertions.assertTrue(totalResults <= firstFilterCount+secondFilterCount,"Total result should be less than or equal to both filter counts sum");
+        clearAllFilters();
+    }
+
+
+    private void scrollIntoView(WebElement element) {
+        javascriptExecutor.executeScript("arguments[0].scrollIntoView({behavior: 'instant', block: 'center'});", element);
+    }
+
+    public JobPage clearAllFilters() {
+        try {
+            WebElement clearButton = wait.until(ExpectedConditions.elementToBeClickable(clearAllFiltersButton));
+            scrollIntoView(clearButton);
+            clearButton.click();
+            wait.until(ExpectedConditions.invisibilityOfElementLocated(clearAllFiltersButton));
+        } catch (Exception e) {
+            System.out.println("Clear button not found or no filters to clear");
+        }
+        return this;
+    }
+}
