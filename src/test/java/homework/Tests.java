@@ -1,6 +1,10 @@
+package homework;
+
+import homework2.JobPage;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import homework.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.List;
 
@@ -8,6 +12,7 @@ public class Tests extends TestClass {
     MainPage mainPage = new MainPage();
     CompaniesPage companiesPage = new CompaniesPage();
     ResultPage resultPage = new ResultPage();
+    JobPage jobPage = new JobPage();
 
     @Test
     public void testCompanySearch() throws InterruptedException {
@@ -60,10 +65,20 @@ public class Tests extends TestClass {
 
         Assertions.assertEquals(allCompanyList,allCompanyList2,"All companies data doesn't equal");
         Assertions.assertEquals(hiringCompanyList,hiringCompanyList2,"Hiring companies data doesn't equal");
+    }
 
-
-
-
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "Job category",
+            "Job special tag","Specialist level","Job salary",
+                            "Job types","Job terms",
+            "By cities"
+    })
+    public void test3(String filterGroupNames) throws InterruptedException {
+        System.out.println("Test3");
+         jobPage.clickToViewMoreButton(filterGroupNames)
+                 .getCheckboxes(filterGroupNames)
+                 .filterSectionViaRandomFilter();
     }
 }
 
