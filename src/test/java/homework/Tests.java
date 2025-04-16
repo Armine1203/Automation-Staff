@@ -79,24 +79,28 @@ public class Tests extends TestClass {
     })
     public void test3(String filterGroupName) throws InterruptedException {
         System.out.println("Test3");
+        //1
+        System.out.println("click to view more button, " +
+                            "get all checkboxes under the filter-group," +
+                            "filter section via random filter" +
+                            "validate filter count and results equal(validation function in filterSectionViaRandomFilter())" +
+                            "also I check pagination in validateFilterCountAndResultsAreEquals()");
         jobPage.clickToViewMoreButton(filterGroupName)
                 .getCheckboxes(filterGroupName)
                 .filterSectionViaRandomFilter();
         jobPage.clearAllFilters();
-    }
 
-    @ParameterizedTest
-    @ValueSource(strings = {
-            "Job category",
-            "Job special tag",
-            "Specialist level",
-            "Job salary",
-            "Job types",
-            "Job terms",
-            "By cities"
-    })
-    public void testCombinedFiltersValidation(String filterGroupName) throws InterruptedException {
+
+        //2
+        System.out.println("------------------------------------------------------------");
+        System.out.println("choose two filters , check they work correct together");
         jobPage.checkFirstAndSecondFiltersSumCountAndResultCount(filterGroupName);
-    }
 
+
+        //3
+        System.out.println("------------------------------------------------------------");
+        System.out.println("then remove one of them and validate other works correct ");
+        jobPage.removeOneOfSelectedFiltersAndValidateResult();
+
+    }
 }

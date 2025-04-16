@@ -3,6 +3,7 @@ package homework2;
 import homework.BasePage;
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -24,8 +25,9 @@ public class JobPage extends BasePage {
     private final By selectorPaginationMaxValue = By.xpath("//li[@class='next']//preceding-sibling::li[1]/a");
     private final By selectorFilteredItems = By.xpath("//h1[text()='Current Job Openings']/parent::div/following-sibling::div//a[@role ='link']");
     private final String formattedViewMoreButtonXpath = "//div[text()=\"%s\"]/following-sibling::div//div[text()='View more']/parent::div";
-    private WebElement paginationMaxValueElement ;
-
+    private WebElement paginationMaxValueElement;
+    private static String previousURL;
+    private static List<WebElement> selectedFilters;
 
     public JobPage clickToViewMoreButton(String sectionName) {
         try {
@@ -46,52 +48,50 @@ public class JobPage extends BasePage {
         String xpathCheckbox = String.format(formattedCheckboxesXpath, sectionName);
         wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(xpathCheckbox)));
         listOfSectionsCheckboxes.addAll(driver.findElements(By.xpath(xpathCheckbox)));
-
         System.out.println("Checkboxes found for section: " + sectionName);
         listOfSectionsCheckboxes.forEach(checkbox -> System.out.println(" - " + checkbox.getText()));
-
         return this;
     }
-    public JobPage filterSectionViaRandomFilter() throws InterruptedException {
+
+    public JobPage filterSectionViaRandomFilter() {
         int randomNumber = random.nextInt(listOfSectionsCheckboxes.size());
-        System.out.println("randomNumber "+randomNumber);
-        javascriptExecutor.executeScript("arguments[0].scrollIntoView({behavior: 'instant', block: 'center'});",  listOfSectionsCheckboxes.get(randomNumber));
+        System.out.println("randomNumber " + randomNumber);
+        javascriptExecutor.executeScript("arguments[0].scrollIntoView({behavior: 'instant', block: 'center'});", listOfSectionsCheckboxes.get(randomNumber));
         listOfSectionsCheckboxes.get(randomNumber).click();
-        System.out.println("Random selected filter : "+listOfSectionsCheckboxes.get(randomNumber).getText());
+        System.out.println("Random selected filter : " + listOfSectionsCheckboxes.get(randomNumber).getText());
+        compareCurrentURL_withPrevious();
         validateFilterCountAndResultsAreEquals(listOfSectionsCheckboxes.get(randomNumber));
         return this;
     }
-    public JobPage validateFilterCountAndResultsAreEquals(WebElement element) throws InterruptedException {
+
+    public JobPage validateFilterCountAndResultsAreEquals(WebElement element) {
         Integer filterCount = Integer.valueOf(element.getText().replaceAll("[^0-9]", ""));
         System.out.println("filterCount is " + filterCount);
         List<WebElement> filteredElements;
         if (filterCount < 50) {
-            //driver.findelement poxarinel
             List<WebElement> paginationElements = driver.findElements(By.xpath("//ul[contains(@class, 'pagination')]"));
             if (!paginationElements.isEmpty()) {
                 System.out.println("Pagination should not be visible when filterCount < 50");
             }
             try {
-                Thread.sleep(5000);//term, poxel
-                filteredElements = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(selectorFilteredItems));
-                System.out.println("filteredElements.size() "+filteredElements.size());
-            }catch (Exception e){
+                filteredElements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(selectorFilteredItems));
+                System.out.println("filteredElements.size() " + filteredElements.size());
+            } catch (Exception e) {
                 filteredElements = new ArrayList<>();
-                System.out.println("filteredElements.size() "+filteredElements.size());
+                System.out.println("filteredElements.size() " + filteredElements.size());
             }
-            System.out.println("filterCount: "+filterCount +", filteredElements.size():"+filteredElements.size());
-            Assertions.assertEquals(filterCount,filteredElements.size(),"filterCount doesn't equals to result item's count");
-        }else {
-            Thread.sleep(5000);//term, poxel kam jnjel
+            System.out.println("filterCount: " + filterCount + ", filteredElements.size():" + filteredElements.size());
+            Assertions.assertEquals(filterCount, filteredElements.size(), "filterCount doesn't equals to result item's count");
+        } else {
             paginationMaxValueElement = wait.until(ExpectedConditions.visibilityOfElementLocated(selectorPaginationMaxValue));
             javascriptExecutor.executeScript("arguments[0].scrollIntoView({behavior: 'instant', block: 'center'});", paginationMaxValueElement);
             Integer paginationMaxValue = Integer.valueOf(paginationMaxValueElement.getText());
-            System.out.println("paginationMaxValue: "+paginationMaxValue);
+            System.out.println("paginationMaxValue: " + paginationMaxValue);
             paginationMaxValueElement.click();
-            Thread.sleep(5000);
+            compareCurrentURL_withPrevious();//new
             filteredElements = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(selectorFilteredItems));
-            System.out.println("Last page filtered elements.size() "+filteredElements.size());
-            Assertions.assertEquals(filterCount,(paginationMaxValue-1)*50+filteredElements.size());
+            System.out.println("Last page filtered elements.size() " + filteredElements.size());
+            Assertions.assertEquals(filterCount, (paginationMaxValue - 1) * 50 + filteredElements.size());
         }
         return this;
     }
@@ -105,6 +105,7 @@ public class JobPage extends BasePage {
         int firstFilterCount = Helper.extractNumberFromElement(firstFilter);
         scrollIntoView(firstFilter);
         firstFilter.click();
+        compareCurrentURL_withPrevious();
 
         //2-rd filter
         getCheckboxes(filterGroupName);
@@ -116,13 +117,17 @@ public class JobPage extends BasePage {
         int secondFilterCount = Helper.extractNumberFromElement(secondFilter);
         scrollIntoView(secondFilter);
         secondFilter.click();
+        compareCurrentURL_withPrevious();
 
-        List<WebElement> mixedResults = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(selectorFilteredItems));;
+        List<WebElement> mixedResults = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(selectorFilteredItems));
+        ;
         int totalResults = mixedResults.size();
 
-        System.out.println("First filter count:"+firstFilterCount+"Second filter count: "+secondFilterCount+"Total result: "+totalResults);
-        Assertions.assertTrue(totalResults <= firstFilterCount+secondFilterCount,"Total result should be less than or equal to both filter counts sum");
-        clearAllFilters();
+        System.out.println("First filter count: " + firstFilterCount + ", Second filter count: " + secondFilterCount + ", Total result: " + totalResults);
+        Assertions.assertTrue(totalResults <= firstFilterCount + secondFilterCount, "Total result should be less than or equal to both filter counts sum");
+        selectedFilters = new ArrayList<>();
+        selectedFilters.add(firstFilter);
+        selectedFilters.add(secondFilter);
     }
 
 
@@ -141,4 +146,36 @@ public class JobPage extends BasePage {
         }
         return this;
     }
+
+    private void compareCurrentURL_withPrevious() throws TimeoutException {
+        try {
+            previousURL = driver.getCurrentUrl();
+            System.out.println("previousURL " + previousURL);
+            wait.until(ExpectedConditions.not(ExpectedConditions.urlToBe(previousURL)));
+            System.out.println("current url " + driver.getCurrentUrl());
+        } catch (TimeoutException timeoutException) {
+            System.out.println("TimeoutException");
+        }
+    }
+
+    public JobPage removeOneOfSelectedFiltersAndValidateResult() {
+        int randomValue = random.nextInt(selectedFilters.size());
+        WebElement toRemove = selectedFilters.get(randomValue);
+        System.out.println("Removing element is : " + toRemove.getText());
+        scrollIntoView(toRemove);
+        wait.until(ExpectedConditions.visibilityOf(toRemove)).click();
+        compareCurrentURL_withPrevious();
+
+        selectedFilters.remove(toRemove);
+
+        if (!selectedFilters.isEmpty()) {
+            WebElement selectedElement = selectedFilters.get(0);
+            validateFilterCountAndResultsAreEquals(selectedElement);
+        }else {
+            System.out.println("No filter for validating");
+        }
+
+        return this;
+    }
+
 }
