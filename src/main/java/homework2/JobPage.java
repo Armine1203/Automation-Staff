@@ -108,7 +108,6 @@ public class JobPage extends BasePage {
         compareCurrentURL_withPrevious();
 
         //2-rd filter
-//        getCheckboxes(filterGroupName);
         int secondRandomIndex = random.nextInt(listOfSectionsCheckboxes.size());
         while (secondRandomIndex == firstRandomIndex && listOfSectionsCheckboxes.size() > 1) {
             secondRandomIndex = random.nextInt(listOfSectionsCheckboxes.size());
