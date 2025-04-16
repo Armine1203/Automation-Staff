@@ -1,6 +1,10 @@
+package homework;
+
+import homework2.JobPage;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import homework.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.List;
 
@@ -8,6 +12,7 @@ public class Tests extends TestClass {
     MainPage mainPage = new MainPage();
     CompaniesPage companiesPage = new CompaniesPage();
     ResultPage resultPage = new ResultPage();
+    JobPage jobPage = new JobPage();
 
     @Test
     public void testCompanySearch() throws InterruptedException {
@@ -58,12 +63,44 @@ public class Tests extends TestClass {
         System.out.println("Hiring2");
         List<Company> hiringCompanyList2 = resultPage.addCompaniesDataToList();
 
-        Assertions.assertEquals(allCompanyList,allCompanyList2,"All companies data doesn't equal");
-        Assertions.assertEquals(hiringCompanyList,hiringCompanyList2,"Hiring companies data doesn't equal");
+        Assertions.assertEquals(allCompanyList, allCompanyList2, "All companies data doesn't equal");
+        Assertions.assertEquals(hiringCompanyList, hiringCompanyList2, "Hiring companies data doesn't equal");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "Job category",
+            "Job special tag",
+            "Specialist level",
+            "Job salary",
+            "Job types",
+            "Job terms",
+            "By cities"
+    })
+    public void test3(String filterGroupName) throws InterruptedException {
+        System.out.println("Test3");
+        //1
+        System.out.println("click to view more button, " +
+                            "get all checkboxes under the filter-group," +
+                            "filter section via random filter" +
+                            "validate filter count and results equal(validation function in filterSectionViaRandomFilter())" +
+                            "also I check pagination in validateFilterCountAndResultsAreEquals()");
+        jobPage.clickToViewMoreButton(filterGroupName)
+                .getCheckboxes(filterGroupName)
+                .filterSectionViaRandomFilter();
+        jobPage.clearAllFilters();
 
 
+        //2
+        System.out.println("------------------------------------------------------------");
+        System.out.println("choose two filters , check they work correct together");
+        jobPage.checkFirstAndSecondFiltersSumCountAndResultCount(filterGroupName);
 
+
+        //3
+        System.out.println("------------------------------------------------------------");
+        System.out.println("then remove one of them and validate other works correct ");
+        jobPage.removeOneOfSelectedFiltersAndValidateResult();
 
     }
 }
-
