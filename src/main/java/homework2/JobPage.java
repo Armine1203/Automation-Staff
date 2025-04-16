@@ -108,7 +108,7 @@ public class JobPage extends BasePage {
         compareCurrentURL_withPrevious();
 
         //2-rd filter
-        getCheckboxes(filterGroupName);
+//        getCheckboxes(filterGroupName);
         int secondRandomIndex = random.nextInt(listOfSectionsCheckboxes.size());
         while (secondRandomIndex == firstRandomIndex && listOfSectionsCheckboxes.size() > 1) {
             secondRandomIndex = random.nextInt(listOfSectionsCheckboxes.size());
@@ -119,8 +119,7 @@ public class JobPage extends BasePage {
         secondFilter.click();
         compareCurrentURL_withPrevious();
 
-        List<WebElement> mixedResults = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(selectorFilteredItems));
-        ;
+        List<WebElement> mixedResults = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(selectorFilteredItems));
         int totalResults = mixedResults.size();
 
         System.out.println("First filter count: " + firstFilterCount + ", Second filter count: " + secondFilterCount + ", Total result: " + totalResults);
