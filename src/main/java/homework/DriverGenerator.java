@@ -2,27 +2,43 @@ package homework;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-
-import java.time.Duration;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 
 public class DriverGenerator {
-    public static WebDriver driver;
+    private static ThreadLocal<WebDriver> instance= new ThreadLocal<>();
 
-    public static WebDriver getDriver() {
-        if (driver == null) {
-            driver = new ChromeDriver();
-            driver.manage().window().maximize();
+    private DriverGenerator() {}
 
+    public static WebDriver getInstance() {
+        if (instance.get() == null) {
+            String browser = System.getProperty("browser", "chrome").toLowerCase();
+            switch (browser) {
+                case "chrome":
+                    instance.set(new ChromeDriver());
+                    break;
+                case "firefox":
+                    instance.set(new FirefoxDriver());
+                    break;
+                case "edge":
+                    instance.set(new EdgeDriver());
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unsupported browser: " + browser);
+            }
+            instance.get().manage().window().maximize();
         }
-        return driver;
+        return instance.get();
     }
 
     public static void quitDriver() {
-        if (driver != null) {
-            driver.quit();
-            driver = null;
+        if (instance.get() != null) {
+            instance.get().quit();
+            instance.remove();
         }
     }
 
-
+    public static WebDriver getDriver() {
+        return getInstance();
+    }
 }

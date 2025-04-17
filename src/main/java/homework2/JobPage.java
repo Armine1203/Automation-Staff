@@ -74,7 +74,7 @@ public class JobPage extends BasePage {
                 System.out.println("Pagination should not be visible when filterCount < 50");
             }
             try {
-                filteredElements = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(selectorFilteredItems));
+                filteredElements = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(selectorFilteredItems));
                 System.out.println("filteredElements.size() " + filteredElements.size());
             } catch (Exception e) {
                 filteredElements = new ArrayList<>();
@@ -107,6 +107,8 @@ public class JobPage extends BasePage {
         firstFilter.click();
         compareCurrentURL_withPrevious();
 
+        getCheckboxes(filterGroupName);
+
         //2-rd filter
         int secondRandomIndex = random.nextInt(listOfSectionsCheckboxes.size());
         while (secondRandomIndex == firstRandomIndex && listOfSectionsCheckboxes.size() > 1) {
@@ -118,7 +120,7 @@ public class JobPage extends BasePage {
         secondFilter.click();
         compareCurrentURL_withPrevious();
 
-        List<WebElement> mixedResults = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(selectorFilteredItems));
+        List<WebElement> mixedResults = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(selectorFilteredItems));
         int totalResults = mixedResults.size();
 
         System.out.println("First filter count: " + firstFilterCount + ", Second filter count: " + secondFilterCount + ", Total result: " + totalResults);
