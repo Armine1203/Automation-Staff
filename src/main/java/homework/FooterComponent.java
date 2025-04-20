@@ -2,18 +2,16 @@ package homework;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
-public class FooterComponent extends BasePage{
-    By selector_companiesViewAllCompaniesTab = By.xpath("//div[text()='Companies']/parent::div//div[text()='View all companies']");
+public class FooterComponent extends BasePage {
+    @FindBy(xpath = "//div[text()='Companies']/parent::div//div[text()='View all companies']")
+    WebElement companiesViewAllCompaniesTab;
 
-    public ResultPage clickCompaniesViewAllCompaniesTab() throws InterruptedException {
-        WebElement companiesViewAllCompaniesTab = wait.until(ExpectedConditions.elementToBeClickable(selector_companiesViewAllCompaniesTab));
-//        javascriptExecutor.executeScript("window.scrollBy(0,250)", companiesViewAllCompaniesTab);
-//        action.moveToElement(companiesViewAllCompaniesTab).perform();//change to JS for scroll
+    public ResultPage clickCompaniesViewAllCompaniesTab() {
         javascriptExecutor.executeScript("arguments[0].scrollIntoView({behavior: 'instant', block: 'center'});", companiesViewAllCompaniesTab);
-
-        Thread.sleep(5000);
+        wait.until(ExpectedConditions.elementToBeClickable(companiesViewAllCompaniesTab));
         companiesViewAllCompaniesTab.click();
         return new ResultPage();
     }

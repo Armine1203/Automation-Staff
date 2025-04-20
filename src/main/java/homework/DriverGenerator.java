@@ -10,7 +10,7 @@ public class DriverGenerator {
 
     private DriverGenerator() {}
 
-    public static WebDriver getInstance() {
+    public synchronized static WebDriver getInstance() {
         if (instance.get() == null) {
             String browser = System.getProperty("browser", "chrome").toLowerCase();
             switch (browser) {

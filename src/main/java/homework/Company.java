@@ -15,26 +15,6 @@ public class Company {
         this.historyJobsCount = historyJobsCount;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public Integer getPageViews() {
-        return pageViews;
-    }
-
-    public Integer getPageFollowers() {
-        return pageFollowers;
-    }
-
-    public Integer getActiveJobsCount() {
-        return activeJobsCount;
-    }
-
-    public Integer getHistoryJobsCount() {
-        return historyJobsCount;
-    }
-
     @Override
     public String toString() {
         return "pages.Company{" +
