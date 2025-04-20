@@ -1,8 +1,11 @@
 package homework;
 
 import homework.Helpers.StringHelper;
+import homework2.tests.Tests2;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 import java.util.List;
@@ -11,11 +14,12 @@ public class Tests extends TestClass {
     MainPage mainPage = new MainPage();
     CompaniesPage companiesPage = new CompaniesPage();
     ResultPage resultPage = new ResultPage();
+    private static final Logger logger = LoggerFactory.getLogger(Tests.class);
 
 
     @Test
     public void testCompanySearch() throws InterruptedException {
-        System.out.println("Test1");
+        logger.info("Starting testCompanySearch test");
         companiesPage = mainPage.clickCompaniesTab().searchIndustry();
         companiesPage.searchRandomString(StringHelper.generateRandomString(8));
         companiesPage.checkResultCountIsZero();
@@ -25,13 +29,13 @@ public class Tests extends TestClass {
 //        resultPage.checkResultListItemsContainText("ser++"); //Work correct
         resultPage.chooseRandomItem();
         resultPage.checkTwoCompanyElementsData();
+        logger.info("Ending testCompanySearch test");
     }
 
 
     @Test
     public void test2()  {
-        System.out.println();
-        System.out.println("Test2");
+        logger.info("Starting test2 test");
         HeaderComponent header = new HeaderComponent();
         FooterComponent footer = new FooterComponent();
         header
@@ -39,11 +43,11 @@ public class Tests extends TestClass {
                 .clickToViewMoreButton()
                 .filterCompaniesByIndustry("sport");
 
-        System.out.println("All companies");
+        logger.info("All companies");
         List<Company> allCompanyList = resultPage.addCompaniesDataToList();
         resultPage.clickHiringTab();
 
-        System.out.println("Hiring");
+        logger.info("Hiring");
         List<Company> hiringCompanyList = resultPage.addCompaniesDataToList();
 
 
@@ -53,11 +57,11 @@ public class Tests extends TestClass {
         //repeat steps from 2 to 4
         companiesPage.filterCompaniesByIndustry("sport");
 
-        System.out.println("All companies2");
+        logger.info("All companies2");
         List<Company> allCompanyList2 = resultPage.addCompaniesDataToList();
         resultPage.clickHiringTab();
 
-        System.out.println("Hiring2");
+        logger.info("Hiring2");
         List<Company> hiringCompanyList2 = resultPage.addCompaniesDataToList();
 
         Assertions.assertEquals(allCompanyList, allCompanyList2, "All companies data doesn't equal");
