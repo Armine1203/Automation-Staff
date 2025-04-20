@@ -8,7 +8,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 public class MainPage extends BasePage {
     private final By selectorCompanies = By.xpath("(//div[text()='Companies'])[2]");
     private final By selectorSearchInput = By.xpath("//div[@class='ant-select-selector']//input[@type='search']");
-    private final By selectorSearchIcon = By.xpath("//img[@alt='search-icon']");//search icon which I don't use, because Industry dropdown doesn't work
+    private final By selectorSearchIcon = By.xpath("//img[@alt='search-icon']");
 
 
 
