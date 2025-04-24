@@ -1,7 +1,6 @@
 package homework;
 
 import homework.Helpers.StringHelper;
-import homework2.tests.Tests2;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -10,11 +9,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class Tests extends TestClass {
+public class CompaniesTests extends TestClass {
     MainPage mainPage = new MainPage();
     CompaniesPage companiesPage = new CompaniesPage();
     ResultPage resultPage = new ResultPage();
-    private static final Logger logger = LoggerFactory.getLogger(Tests.class);
+    private static final Logger logger = LoggerFactory.getLogger(CompaniesTests.class);
 
 
     @Test
@@ -34,7 +33,7 @@ public class Tests extends TestClass {
 
 
     @Test
-    public void test2()  {
+    public void filterCompaniesByIndustries()  {
         logger.info("Starting test2 test");
         HeaderComponent header = new HeaderComponent();
         FooterComponent footer = new FooterComponent();

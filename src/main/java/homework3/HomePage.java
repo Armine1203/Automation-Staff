@@ -18,7 +18,7 @@ public class HomePage extends BasePage {
     WebElement registerButton;
 
     @Step("hover on candidate Tab")
-    public HomePage hoverOnCandidateTab() throws InterruptedException {
+    public HomePage hoverOnCandidateTab() {
         action.moveToElement(candidateTab).perform();
         return this;
     }

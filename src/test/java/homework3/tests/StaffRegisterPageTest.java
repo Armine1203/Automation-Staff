@@ -5,42 +5,39 @@ import homework3.StaffRegisterPage;
 import homework3.TestClass3;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.screenshots.ScreenshotExtension;
 
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Properties;
-
-public class Tests3 extends TestClass3 {
+@ExtendWith(ScreenshotExtension.class)
+public class StaffRegisterPageTest extends TestClass3 {
     HomePage homePage = new HomePage();
     StaffRegisterPage staffRegisterPage = new StaffRegisterPage();
     Logger logger = LoggerFactory.getLogger(StaffRegisterPage.class);
 
     @Test
-    public void test() throws InterruptedException {
+    public void fillRegistrationForm() {
         homePage
                 .hoverOnCandidateTab()
                 .clickOnRegisterButton()
                 .fillFirstName("Armine")
                 .fillLastName("Lalayan")
-
                 .fillBirthdayDropDown("2003", "March", "12");
 
-
-        staffRegisterPage.fillEmail(false,"nbhjsdb-jsdj");
+        staffRegisterPage.fillEmail(false, "nbhjsdb-jsdj");
         staffRegisterPage.emailInput.clear();
-        staffRegisterPage.fillEmail(true,"nbhjsdbjsdj@gmail.com");
+        staffRegisterPage.fillEmail(true, "nbhjsdbjsdj@gmail.com");
 
         try {
-            FileReader reader = new FileReader("src/test/resources/testdata.properties");
-            Properties properties = new Properties();
-            properties.load(reader);
-            String password = properties.getProperty("test.password");
+            String password = System.getProperty("password");
+            if (password == null || password.isEmpty()) {
+                throw new IllegalArgumentException("Password not provided! Use: mvn test -Dtest.password=YourPassword123");
+            }
             staffRegisterPage.fillPassword(password);
             staffRegisterPage.fillConfirmPassword(password);
-        }catch (IOException exception){
-            logger.error("File isn't found");
+        } catch (IllegalArgumentException exception) {
+            logger.error("Password wasn't entered");
         }
 
         String previousStyle = staffRegisterPage.getRegisterButtonCurrentStyle();
@@ -48,7 +45,11 @@ public class Tests3 extends TestClass3 {
 
         String currentStyle = staffRegisterPage.getRegisterButtonCurrentStyle();
 
-        Assertions.assertNotEquals(previousStyle,currentStyle,"Register button style doesn't change");
+        Assertions.assertNotEquals(previousStyle, currentStyle, "Register button style doesn't change");
     }
 
 }
+//I use this commands
+//mvn test -Dbrowser=edge -Dtest=StaffRegisterPageTest -Dpassword=.......
+
+

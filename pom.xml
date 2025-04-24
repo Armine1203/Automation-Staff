@@ -12,12 +12,31 @@
         <allure.version>2.24.0</allure.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/Armine1203/Automation-Staff</url>
+        </repository>
+    </repositories>
 
     <groupId>org.example</groupId>
-    <artifactId>maven_homework</artifactId>
+    <artifactId>AutomationHW2</artifactId>
     <version>1.3-SNAPSHOT</version>
 
     <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.10.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>7.11.0</version>
+        </dependency>
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>

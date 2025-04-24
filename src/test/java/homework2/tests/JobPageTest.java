@@ -3,13 +3,18 @@ package homework2.tests;
 import homework2.JobPage;
 import homework2.TestClass2;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.openqa.selenium.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utils.screenshots.ScreenshotExtension;
+import java.util.List;
 
-public class Tests2 extends TestClass2 {
-    private static final Logger logger = LoggerFactory.getLogger(Tests2.class);
+@ExtendWith(ScreenshotExtension.class)
+public class JobPageTest extends TestClass2 {
+    private static final Logger logger = LoggerFactory.getLogger(JobPageTest.class);
     JobPage jobPage = new JobPage();
 
     @ParameterizedTest
@@ -22,20 +27,19 @@ public class Tests2 extends TestClass2 {
             "Job terms",
             "By cities"
     })
-    public void test3(String filterGroupName) {
-        logger.info("Starting Test3 for filter group: {}", filterGroupName);
+    public void filterJobsViaOneRandomFilterAndCheckPagination(String filterGroupName) {
+        logger.info("Starting filterJobsViaOneRandomFilterAndCheckPagination test for filter group: {}", filterGroupName);
         //1
-
         try {
             logger.info("Click to view more button, get all checkboxes, filter via random filter");
             jobPage.clickToViewMoreButton(filterGroupName)
                     .getCheckboxes(filterGroupName)
                     .filterSectionViaRandomFilter();
 
-            int[] result = jobPage.validateFilterCountAndResultsAreEquals(jobPage.getLastSelectedFilter());
-            int filterCount = result[0];
-            int actualCount = result[1];
-            boolean paginationVisible = result[2] == 1;
+            JobPage.FilterValidationResult result = jobPage.getFilterValidationResult();
+            int filterCount = result.getFilterCount();
+            int actualCount = result.getActualCount();
+            boolean paginationVisible = result.isPaginationVisible();
             logger.info("Validation results - Filter count: {}, Actual count: {}, Pagination visible: {}",
                     filterCount, actualCount, paginationVisible);
 
@@ -49,9 +53,9 @@ public class Tests2 extends TestClass2 {
                         "Filter count doesn't match calculated pagination results");
             }
             jobPage.clearAllFilters();
-            logger.info("Test3 completed succesfully for filter group : {}", filterGroupName);
+            logger.info("filterJobsViaOneRandomFilterAndCheckPagination test completed succesfully for filter group : {}", filterGroupName);
         } catch (Exception e) {
-            logger.error("Test3 failed for filter group: {}", filterGroupName, e);
+            logger.error("filterJobsViaOneRandomFilterAndCheckPagination test failed for filter group: {}", filterGroupName, e);
         }
     }
 
@@ -65,18 +69,18 @@ public class Tests2 extends TestClass2 {
             "Job terms",
             "By cities"
     })
-    public void test4(String filterGroupName) {
-        logger.info("Starting Test4 for filter group: {}", filterGroupName);
+    public void filterJobsViaTwoRandomFilters_RemoveOneOfThem(String filterGroupName) {
+        logger.info("Starting filterJobsViaTwoRandomFilters_RemoveOneOfThem test for filter group: {}", filterGroupName);
 
         //2
         try {
             jobPage.clickToViewMoreButton(filterGroupName);
             jobPage.getCheckboxes(filterGroupName);
             logger.info("choose two filters , check they work correct together");
-            int[] result = jobPage.checkFirstAndSecondFiltersSumCountAndResultCount(filterGroupName);
-            int firstFilterCount = result[0];
-            int secondFilterCount = result[1];
-            int totalResults = result[2];
+            List<Integer> result = jobPage.getFirstAndSecondFiltersSumCountAndResultCount(filterGroupName);
+            int firstFilterCount = result.get(0);
+            int secondFilterCount = result.get(1);
+            int totalResults = result.get(2);
             logger.info("First filter count: {}, Second filter count: {}, Total result: {}",
                     firstFilterCount, secondFilterCount, totalResults);
 
@@ -85,15 +89,15 @@ public class Tests2 extends TestClass2 {
 
 
             logger.info("then remove one of them and validate other works correct");
-            int[] afterRemovalResult = jobPage.removeOneOfSelectedFiltersAndValidateResult();
+            JobPage.FilterValidationResult afterRemovalResult = jobPage.removeOneOfSelectedFiltersAndValidateResult();
 
             if (afterRemovalResult != null) {
-                Assertions.assertEquals(afterRemovalResult[0], afterRemovalResult[1],
+                Assertions.assertEquals(afterRemovalResult.getFilterCount(), afterRemovalResult.getActualCount(),
                         "After removal, filter count doesn't match results");
             }
-            logger.info("Test4 completed successfully for filter group: {}", filterGroupName);
-        } catch (Exception e) {
-            logger.error("Test4 failed for filter group: {}", filterGroupName, e);
+            logger.info("filterJobsViaTwoRandomFilters_RemoveOneOfThem test completed successfully for filter group: {}", filterGroupName);
+        } catch (TimeoutException e) {
+            logger.error("filterJobsViaTwoRandomFilters_RemoveOneOfThem test failed for filter group: {}", filterGroupName, e);
         }
     }
 }
