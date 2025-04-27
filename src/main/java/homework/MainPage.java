@@ -3,22 +3,27 @@ package homework;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 public class MainPage extends BasePage {
-    private final By selectorCompanies = By.xpath("(//div[text()='Companies'])[2]");
-    private final By selectorSearchInput = By.xpath("//div[@class='ant-select-selector']//input[@type='search']");
-    private final By selectorSearchIcon = By.xpath("//img[@alt='search-icon']");
 
+    @FindBy(xpath = "(//div[text()='Companies'])[2]")
+    private WebElement companiesTab;
 
+    @FindBy(xpath = "//div[@class='ant-select-selector']//input[@type='search']" )
+    private WebElement allIndustriesSearchField;
+
+    @FindBy(xpath = "//img[@alt='search-icon']")
+    private WebElement searchIcon;
 
     public MainPage clickCompaniesTab() {
-        wait.until(ExpectedConditions.elementToBeClickable(selectorCompanies)).click();
+        wait.until(ExpectedConditions.elementToBeClickable(companiesTab)).click();
         return this;
     }
 
     public CompaniesPage searchIndustry() {
-        WebElement allIndustriesSearchField = wait.until(ExpectedConditions.elementToBeClickable(selectorSearchInput));
+        wait.until(ExpectedConditions.elementToBeClickable(allIndustriesSearchField));
         allIndustriesSearchField.click();
 
         wait.until(ExpectedConditions.visibilityOf(allIndustriesSearchField));
@@ -26,7 +31,7 @@ public class MainPage extends BasePage {
         allIndustriesSearchField.sendKeys("Information technologies");
         allIndustriesSearchField.sendKeys(Keys.ENTER);
 
-        WebElement searchIcon = wait.until(ExpectedConditions.elementToBeClickable(selectorSearchIcon));
+        wait.until(ExpectedConditions.elementToBeClickable(searchIcon));
         searchIcon.click();
         return new CompaniesPage();
     }

@@ -2,14 +2,14 @@ package homework;
 
 import homework.Helpers.StringHelper;
 import org.openqa.selenium.By;
-import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 public class CompaniesPage extends BasePage {
 
-    private final By selectorSearchResultCount = By.xpath("//img[@alt='building']//following-sibling::div");
+    @FindBy(xpath = "//img[@alt='building']//following-sibling::div")
+    private WebElement searchResultCount;
 
     @FindBy(xpath = "//input[@placeholder='Enter keywords...']")
     private WebElement searchPageInput;
@@ -22,8 +22,6 @@ public class CompaniesPage extends BasePage {
 
     private static String previousURL;
 
-
-
     public void searchRandomString(String text) {
         wait.until(ExpectedConditions.elementToBeClickable(searchPageInput));
         searchPageInput.click();
@@ -34,19 +32,17 @@ public class CompaniesPage extends BasePage {
         compareCurrentURL_withPrevious();
     }
 
-    public void checkResultCountIsZero() {
-        String searchResultCount = wait.until(ExpectedConditions.visibilityOfElementLocated(selectorSearchResultCount)).getText();
-        System.out.println(searchResultCount);
-        Integer resultCount = Integer.parseInt(searchResultCount);
-//        Assertions.assertEquals(0, resultCount, "result isn't 0");
-        System.out.println("The result is 0");
+    public int getResultCount() {
+        wait.until(ExpectedConditions.visibilityOf(searchResultCount));
+        String searchResultCountText = searchResultCount.getText();
+        System.out.println(searchResultCountText);
+        return Integer.parseInt(searchResultCountText);
     }
 
     public void clearSearchInput()  {
         searchPageInput.clear();
     }
 
-    //2
     public CompaniesPage clickToViewMoreButton()  {
         wait.until(ExpectedConditions.elementToBeClickable(viewMore));
         viewMore.click();
@@ -55,24 +51,26 @@ public class CompaniesPage extends BasePage {
 
     public ResultPage filterCompaniesByIndustry(String industryName) {
         WebElement element = wait.until(ExpectedConditions.elementToBeClickable(
-                By.xpath(String.format("//div[text() = 'Filter By Industry']/parent::div//div/span[text()=\"%s\"]",
-                        StringHelper.capitalizeFirstLetters(industryName)))));
+                getDynamicIndustryElement(industryName)));
         javascriptExecutor.executeScript("arguments[0].scrollIntoView({behavior: 'instant', block: 'center'});", element);
         element.click();
         compareCurrentURL_withPrevious();
         return new ResultPage();
-
     }
-    public void compareCurrentURL_withPrevious() throws TimeoutException {
+
+    private WebElement getDynamicIndustryElement(String industryName) {
+        return driver.findElement(By.xpath(String.format("//div[text()='Filter By Industry']/parent::div//div/span[text()=\"%s\"]",
+                StringHelper.capitalizeFirstLetters(industryName))));
+    }
+
+    public void compareCurrentURL_withPrevious() {
         try {
             previousURL = driver.getCurrentUrl();
             System.out.println("previousURL " + previousURL);
             wait.until(ExpectedConditions.not(ExpectedConditions.urlToBe(previousURL)));
             System.out.println("current url " + driver.getCurrentUrl());
-        } catch (TimeoutException timeoutException) {
-            System.out.println("TimeoutException");
+        } catch (Exception e) {
+            System.out.println("TimeoutException or other error: " + e.getMessage());
         }
     }
 }
-
-
