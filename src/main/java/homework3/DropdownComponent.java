@@ -3,7 +3,6 @@ package homework3;
 import homework.BasePage;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import utils.ScreenshotUtil;
 
 public class DropdownComponent extends BasePage {
     private final String baseXPath;
@@ -49,7 +48,6 @@ public class DropdownComponent extends BasePage {
     }
 
     private void handleOptionNotFound(String optionToSelect) {
-        ScreenshotUtil.attachScreenshot(driver, "Dropdown option not found");
-        throw new RuntimeException();
+        throw new NoSuchElementException("Dropdown option not found");
     }
 }

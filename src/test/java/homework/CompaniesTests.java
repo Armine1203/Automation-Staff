@@ -1,70 +1,71 @@
 package homework;
 
 import homework.Helpers.StringHelper;
-import homework2.tests.Tests2;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import java.util.List;
 
-public class Tests extends TestClass {
+public class CompaniesTests extends TestClass {
+
     MainPage mainPage = new MainPage();
     CompaniesPage companiesPage = new CompaniesPage();
     ResultPage resultPage = new ResultPage();
-    private static final Logger logger = LoggerFactory.getLogger(Tests.class);
-
+    private static final Logger logger = LoggerFactory.getLogger(CompaniesTests.class);
 
     @Test
-    public void testCompanySearch() throws InterruptedException {
+    public void testCompanySearch() {
         logger.info("Starting testCompanySearch test");
         companiesPage = mainPage.clickCompaniesTab().searchIndustry();
-        companiesPage.searchRandomString(StringHelper.generateRandomString(8));
-        companiesPage.checkResultCountIsZero();
+
+        String randomString = StringHelper.generateRandomString(8);
+        companiesPage.searchRandomString(randomString);
+        int resultCount = companiesPage.getResultCount();
+        Assertions.assertEquals(0, resultCount, "Result count should be 0 after searching: " + randomString);
+
         companiesPage.clearSearchInput();
         companiesPage.searchRandomString("ser");
         resultPage.checkResultListItemsContainText("ser");
-//        resultPage.checkResultListItemsContainText("ser++"); //Work correct
+
         resultPage.chooseRandomItem();
-        resultPage.checkTwoCompanyElementsData();
+        Company expectedCompany = resultPage.getCompanyFromList();
+        Company actualCompany = resultPage.getSelectedCompanyData();
+
+        Assertions.assertEquals(expectedCompany.getName().trim().toLowerCase(), actualCompany.getName().trim().toLowerCase(), "Company names do not match");
+        Assertions.assertEquals(expectedCompany.getPageViews(), actualCompany.getPageViews(), "Page views count does not match");
+        Assertions.assertEquals(expectedCompany.getPageFollowers(), actualCompany.getPageFollowers(), "Page followers count does not match");
+        Assertions.assertEquals(expectedCompany.getActiveJobsCount(), actualCompany.getActiveJobsCount(), "Active jobs count does not match");
+        Assertions.assertEquals(expectedCompany.getHistoryJobsCount(), actualCompany.getHistoryJobsCount(), "History jobs count does not match");
+
         logger.info("Ending testCompanySearch test");
     }
 
-
     @Test
-    public void test2()  {
-        logger.info("Starting test2 test");
+    public void filterCompaniesByIndustries() {
+        logger.info("Starting filterCompaniesByIndustries test");
         HeaderComponent header = new HeaderComponent();
         FooterComponent footer = new FooterComponent();
-        header
-                .clickOnCompaniesTab()
+
+        header.clickOnCompaniesTab()
                 .clickToViewMoreButton()
                 .filterCompaniesByIndustry("sport");
 
-        logger.info("All companies");
         List<Company> allCompanyList = resultPage.addCompaniesDataToList();
         resultPage.clickHiringTab();
-
-        logger.info("Hiring");
         List<Company> hiringCompanyList = resultPage.addCompaniesDataToList();
 
-
-        //--------------------------------
         footer.clickCompaniesViewAllCompaniesTab();
 
-        //repeat steps from 2 to 4
         companiesPage.filterCompaniesByIndustry("sport");
-
-        logger.info("All companies2");
         List<Company> allCompanyList2 = resultPage.addCompaniesDataToList();
         resultPage.clickHiringTab();
-
-        logger.info("Hiring2");
         List<Company> hiringCompanyList2 = resultPage.addCompaniesDataToList();
 
         Assertions.assertEquals(allCompanyList, allCompanyList2, "All companies data doesn't equal");
         Assertions.assertEquals(hiringCompanyList, hiringCompanyList2, "Hiring companies data doesn't equal");
+
+        logger.info("Ending filterCompaniesByIndustries test");
     }
 }

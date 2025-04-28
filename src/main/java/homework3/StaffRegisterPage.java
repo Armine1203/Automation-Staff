@@ -6,7 +6,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import utils.ScreenshotUtil;
 
 public class StaffRegisterPage extends BasePage {
     DropdownComponent dropdownComponent = new DropdownComponent("//span[input[@type='search']]");
@@ -66,14 +65,9 @@ public class StaffRegisterPage extends BasePage {
         if (isValid){
             wait.until(ExpectedConditions.invisibilityOf(invalidEmailMessage));
             logger.info("invalid message is missed");
-            ScreenshotUtil.attachScreenshot(driver,"invalid message is missed");
-
         }else {
             wait.until(ExpectedConditions.textToBePresentInElement(invalidEmailMessage,"The field must be a valid email address."));
             logger.info("invalid message is available and match to text");
-            ScreenshotUtil.attachScreenshot(driver,"invalid message is available");
-
-
         }
 
         logger.info("email is filled");
@@ -111,11 +105,11 @@ public class StaffRegisterPage extends BasePage {
         dropdownComponent.selectOption("Year", year);
         dropdownComponent.selectOption("Month", month);
         dropdownComponent.selectOption("Day", day);
-        ScreenshotUtil.attachScreenshot(driver);
     }
 
     public String getRegisterButtonCurrentStyle(){
-        return wait.until(ExpectedConditions.visibilityOf(formRegisterButton)).getDomAttribute("style");
+        String registerButtonStylePropertyText = wait.until(ExpectedConditions.visibilityOf(formRegisterButton)).getDomAttribute("style");
+        return registerButtonStylePropertyText;
     }
 
 
