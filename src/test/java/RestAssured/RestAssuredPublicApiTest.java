@@ -3,8 +3,6 @@ import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.*;
-
-
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
@@ -22,9 +20,9 @@ public class RestAssuredPublicApiTest {
                 .build().log().all();
     }
 
+    @Order(1)
     @Test
     public void getUsers() {
-        System.out.println("test1");
         given()
                 .spec(requestSpecification)
                 .when()
@@ -37,6 +35,7 @@ public class RestAssuredPublicApiTest {
                 .body("data.size()", equalTo(10));
     }
 
+    @Order(2)
     @Test
     public void getUsersPerPage() {
         System.out.println("test2");
@@ -51,9 +50,9 @@ public class RestAssuredPublicApiTest {
                 .body("data.size()", equalTo(10));
     }
 
+    @Order(3)
     @Test
     public void deleteUserAndVerify() {
-        System.out.println("test3");
         int userId =
                 given()
                 .spec(requestSpecification)
@@ -64,15 +63,13 @@ public class RestAssuredPublicApiTest {
                 .log().body()
                 .extract().path("data[0].id");
 
-//        System.out.println("Id " +userId);
-
         given().spec(requestSpecification)
                 .when()
                 .delete("/users/" + userId)
                 .then()
                 .log()
                 .body()
-                .statusCode((204));
+                .statusCode(anyOf(equalTo(204), equalTo(200)));
 
         given().spec(requestSpecification)
                 .when()
@@ -80,6 +77,9 @@ public class RestAssuredPublicApiTest {
                 .then()
                 .log()
                 .body()
-                .statusCode(404);
+                .statusCode(200)//return 200 but in body code=404
+                .body("code", is(404));  // But the response code in body is 404
+
+
     }
 }

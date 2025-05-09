@@ -5,7 +5,6 @@ import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
@@ -51,7 +50,7 @@ public class RestAssuredPublicV1Test {
     }
 
     @Test
-    public void deleteUserAndVerify() {
+    public void validateGender() {
         given()
                 .spec(requestSpecification)
                 .when()
@@ -62,4 +61,34 @@ public class RestAssuredPublicV1Test {
                 .statusCode(200)
                 .body("data.gender", everyItem(anyOf(equalTo("male"), equalTo("female"))));
     }
+    @Test
+    public void deleteUserAndVerify() {
+        int userId = given()
+                .spec(requestSpecification)
+                .queryParam("per_page", 1)
+                .when()
+                .get("/users")
+                .then()
+                .log()
+                .body()
+                .extract()
+                .path("data[0].id");
+
+        given().spec(requestSpecification)
+                .when()
+                .delete("/users/" + userId)
+                .then()
+                .log()
+                .body()
+                .statusCode(anyOf(equalTo(204), equalTo(200)));
+
+        given().spec(requestSpecification)
+                .when()
+                .get("/users/" + userId)
+                .then()
+                .log()
+                .body()
+                .statusCode(404);
+    }
+
 }
