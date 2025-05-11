@@ -10,7 +10,7 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class RestAssuredPublicV2Test {
+public class RestAssuredPublicV2Test extends BaseClass{
 
     private RequestSpecification requestSpecification;
 
@@ -19,7 +19,7 @@ public class RestAssuredPublicV2Test {
         RestAssured.baseURI = "https://gorest.co.in";
         requestSpecification = new RequestSpecBuilder()
                 .setBasePath("/public/v2")
-                .addHeader("Authorization", "Bearer fc93ba365fb022bd8736d5c76f000ff19910ea395115bca048147caab9a80ec0")
+                .addHeader("Authorization", getToken())
                 .build().log().all();
     }
 
