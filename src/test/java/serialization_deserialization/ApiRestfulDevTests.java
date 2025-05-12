@@ -46,8 +46,6 @@ public class ApiRestfulDevTests extends BaseClass {
         List<ApiObject> objects = response.as(new TypeRef<List<ApiObject>>() {});
         assertFalse(objects.isEmpty(), "response list should not be empty");
 
-        assertTrue(objects.size() > 0, "Object list should not be empty");
-
         for (ApiObject object : objects) {
             System.out.println("ID: " + object.getId());
             System.out.println("Name: " + object.getName());
