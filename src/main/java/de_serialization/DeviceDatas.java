@@ -1,5 +1,6 @@
 package de_serialization;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -7,11 +8,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DeviceDatas {
+
+    @JsonAlias({"color", "Color"})
     private String color;
+
+    @JsonAlias({"capacity", "Capacity"})
     private String capacity;
+
+    @JsonAlias({"generation", "Generation"})
+    private String generation;
+
     private int capacityGB;
     private float price;
-    private String generation;
     private int year;
     private String cpuModel;
     private String hardDiskSize;
@@ -20,19 +28,14 @@ public class DeviceDatas {
     private String description;
     private float screenSize;
 
-    @JsonProperty("color")
     public String getColor() { return color; }
     public void setColor(String color) { this.color = color; }
 
-    @JsonProperty("Color")
-    public void setColorAlt(String color) { this.color = color; }
-
-    @JsonProperty("capacity")
     public String getCapacity() { return capacity; }
     public void setCapacity(String capacity) { this.capacity = capacity; }
 
-    @JsonProperty("Capacity")
-    public void setCapacityAlt(String capacity) { this.capacity = capacity; }
+    public String getGeneration() { return generation; }
+    public void setGeneration(String generation) { this.generation = generation; }
 
     @JsonProperty("capacity GB")
     public int getCapacityGB() { return capacityGB; }
@@ -45,14 +48,7 @@ public class DeviceDatas {
          this.price = Float.parseFloat(price);
     }
 
-    @JsonProperty("generation")
-    public String getGeneration() { return generation; }
-    public void setGeneration(String generation) { this.generation = generation; }
-
-    @JsonProperty("Generation")
-    public void setGenerationAlt(String generation) { this.generation = generation; }
-
-    @JsonProperty("year")
+     @JsonProperty("year")
     public int getYear() { return year; }
     public void setYear(Integer year) { this.year = year; }
 

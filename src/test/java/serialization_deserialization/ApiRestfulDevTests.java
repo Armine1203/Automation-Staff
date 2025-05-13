@@ -8,7 +8,6 @@ import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
-import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -45,8 +44,6 @@ public class ApiRestfulDevTests extends BaseClass {
 
         List<ApiObject> objects = response.as(new TypeRef<List<ApiObject>>() {});
         assertFalse(objects.isEmpty(), "response list should not be empty");
-
-        assertTrue(objects.size() > 0, "Object list should not be empty");
 
         for (ApiObject object : objects) {
             System.out.println("ID: " + object.getId());
